@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ImageInspector.Controls\ImageInspector.Controls.csproj" />
+    <ProjectReference Include="..\ImageInspector.ImageLibrary\ImageInspector.ImageLibrary.csproj" />
+  </ItemGroup>
+
+</Project>
