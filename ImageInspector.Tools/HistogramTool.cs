@@ -1,4 +1,5 @@
 ﻿using ImageInspector.Controls;
+using ImageInspector.ImageLibrary;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,7 +16,9 @@ namespace ImageInspector.Tools
     {
         private MyPicturebox picturebox = new MyPicturebox();
         private Rectangle SearchAreaDisplay, SearchAreaImage;
-    
+
+        int histo = 0;
+
         public HistogramTool()
         {
             InitializeComponent();
@@ -23,17 +26,25 @@ namespace ImageInspector.Tools
 
         public int Cancel()
         {
-            throw new NotImplementedException();
+            picturebox.DRAWING = false;
+            picturebox.ClearDisplay();
+            return 0;
         }
 
         public int Confirm()
         {
-            throw new NotImplementedException();
+            picturebox.DRAWING = false;
+            picturebox.ClearDisplay();
+
+            SearchAreaDisplay = picturebox.SEARCH_AREA_DISPLAY;
+            SearchAreaImage = picturebox.SEARCH_AREA_IMAGE;
+
+            return 0;
         }
 
         public string GetResult()
         {
-            throw new NotImplementedException();
+            return histo.ToString();
         }
 
         public void Release()
@@ -43,12 +54,36 @@ namespace ImageInspector.Tools
 
         public int Run()
         {
-            throw new NotImplementedException();
+            Image img = CommonBase.CropImage(picturebox.IMAGE, SearchAreaImage);
+            //Image gray = CommonBase.ConvertColorToGrayscale(img);
+
+            picturebox.DrawRectangle(SearchAreaDisplay);
+
+            int histo = CommonBase.GetHisto(img);
+
+            lblResult.Text = histo.ToString();
+            if (histo >= numMin.Value && histo <= numMax.Value)
+            {
+                lblResult.ForeColor = Color.Green;
+                return 0;
+            }
+            else
+            {
+                lblResult.ForeColor = Color.Red;
+                return 1;
+            }
         }
 
         public int SetImage(MyPicturebox display)
         {
-            throw new NotImplementedException();
+            picturebox = display;
+            if (picturebox != null)
+            {
+                SearchAreaDisplay = new Rectangle(0, 0, display.Width, display.Height);
+                SearchAreaImage = new Rectangle(0, 0, display.IMAGE.Width, display.IMAGE.Height);
+            }
+
+            return 0;
         }
     }
 }

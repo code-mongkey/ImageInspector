@@ -69,6 +69,9 @@ namespace ImageInspector
                 case 0:
                     tool = new Tools.BarcodeTool();
                     break;
+                case 2:
+                    tool = new Tools.HistogramTool();
+                    break;
             }
 
             tabControl1.TabPages.Add(new TabPage(cboTools.Text + tabControl1.TabPages.Count));

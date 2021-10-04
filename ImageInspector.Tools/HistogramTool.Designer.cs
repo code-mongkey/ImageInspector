@@ -31,14 +31,14 @@ namespace ImageInspector.Tools
         {
             this.btnRun = new System.Windows.Forms.Button();
             this.btnSearchArea = new System.Windows.Forms.Button();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.numMin = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
+            this.numMax = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.lblResult = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numMin)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numMax)).BeginInit();
             this.SuspendLayout();
             // 
             // btnRun
@@ -59,13 +59,18 @@ namespace ImageInspector.Tools
             this.btnSearchArea.Text = "SEARCH AREA";
             this.btnSearchArea.UseVisualStyleBackColor = true;
             // 
-            // numericUpDown1
+            // numMin
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(160, 111);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(89, 23);
-            this.numericUpDown1.TabIndex = 5;
-            this.numericUpDown1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numMin.Location = new System.Drawing.Point(160, 111);
+            this.numMin.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numMin.Name = "numMin";
+            this.numMin.Size = new System.Drawing.Size(89, 23);
+            this.numMin.TabIndex = 5;
+            this.numMin.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label1
             // 
@@ -76,13 +81,23 @@ namespace ImageInspector.Tools
             this.label1.TabIndex = 6;
             this.label1.Text = "MIN";
             // 
-            // numericUpDown2
+            // numMax
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(160, 155);
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(89, 23);
-            this.numericUpDown2.TabIndex = 5;
-            this.numericUpDown2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numMax.Location = new System.Drawing.Point(160, 155);
+            this.numMax.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numMax.Name = "numMax";
+            this.numMax.Size = new System.Drawing.Size(89, 23);
+            this.numMax.TabIndex = 5;
+            this.numMax.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numMax.Value = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
             // 
             // label2
             // 
@@ -96,11 +111,12 @@ namespace ImageInspector.Tools
             // lblResult
             // 
             this.lblResult.AutoSize = true;
-            this.lblResult.Location = new System.Drawing.Point(160, 203);
+            this.lblResult.Location = new System.Drawing.Point(231, 203);
             this.lblResult.Name = "lblResult";
             this.lblResult.Size = new System.Drawing.Size(14, 15);
             this.lblResult.TabIndex = 7;
             this.lblResult.Text = "0";
+            this.lblResult.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label4
             // 
@@ -119,14 +135,14 @@ namespace ImageInspector.Tools
             this.Controls.Add(this.lblResult);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.numericUpDown2);
-            this.Controls.Add(this.numericUpDown1);
+            this.Controls.Add(this.numMax);
+            this.Controls.Add(this.numMin);
             this.Controls.Add(this.btnSearchArea);
             this.Controls.Add(this.btnRun);
             this.Name = "HistogramTool";
             this.Size = new System.Drawing.Size(300, 400);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numMin)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numMax)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -136,9 +152,9 @@ namespace ImageInspector.Tools
 
         private System.Windows.Forms.Button btnRun;
         private System.Windows.Forms.Button btnSearchArea;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown numMin;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.NumericUpDown numericUpDown2;
+        private System.Windows.Forms.NumericUpDown numMax;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lblResult;
         private System.Windows.Forms.Label label4;
