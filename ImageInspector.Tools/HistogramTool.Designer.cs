@@ -49,6 +49,7 @@ namespace ImageInspector.Tools
             this.btnRun.TabIndex = 1;
             this.btnRun.Text = "RUN";
             this.btnRun.UseVisualStyleBackColor = true;
+            this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
             // 
             // btnSearchArea
             // 
@@ -58,6 +59,7 @@ namespace ImageInspector.Tools
             this.btnSearchArea.TabIndex = 4;
             this.btnSearchArea.Text = "SEARCH AREA";
             this.btnSearchArea.UseVisualStyleBackColor = true;
+            this.btnSearchArea.Click += new System.EventHandler(this.btnSearchArea_Click);
             // 
             // numMin
             // 

@@ -116,7 +116,17 @@ namespace ImageInspector.Controls
             int eX = (int)((pictureBox1.Image.Width / 2) + (Search_Area_Display.X + Search_Area_Display.Width - (pictureBox1.ClientSize.Width / 2)) * resizeFactor);
             int eY = (int)((pictureBox1.Image.Height / 2) + (Search_Area_Display.Y + Search_Area_Display.Height - (pictureBox1.ClientSize.Height / 2)) * resizeFactor);
 
-            Search_Area_Image = new Rectangle(sX, sY, eX - sX, eY - sY);
+            sX = sX < 0 ? 0 : sX;
+            sY = sY < 0 ? 0 : sY;
+            eX = eX < 0 ? 0 : eX;
+            eY = eY < 0 ? 0 : eY;
+
+            sX = sX >= pictureBox1.Image.Width ? pictureBox1.Image.Width - 1 : sX;
+            sY = sY >= pictureBox1.Image.Height ? pictureBox1.Image.Height - 1 : sY;
+            eX = eX >= pictureBox1.Image.Width ? pictureBox1.Image.Width - 1 : eX;
+            eY = eY >= pictureBox1.Image.Height ? pictureBox1.Image.Height - 1 : eY;
+
+            Search_Area_Image = new Rectangle(sX, sY, Math.Max(eX - sX, 1), Math.Max(eY - sY, 1));
         }
 
         public override bool ValidateChildren()

@@ -14,10 +14,9 @@ namespace ImageInspector.Tools
 {
     public partial class HistogramTool : UserControl, ToolInterface
     {
+        private MyHistogram MyHistogram = new MyHistogram();
         private MyPicturebox picturebox = new MyPicturebox();
         private Rectangle SearchAreaDisplay, SearchAreaImage;
-
-        int histo = 0;
 
         public HistogramTool()
         {
@@ -44,7 +43,7 @@ namespace ImageInspector.Tools
 
         public string GetResult()
         {
-            return histo.ToString();
+            return (string)MyHistogram.RESULT;
         }
 
         public void Release()
@@ -54,15 +53,16 @@ namespace ImageInspector.Tools
 
         public int Run()
         {
-            Image img = CommonBase.CropImage(picturebox.IMAGE, SearchAreaImage);
-            //Image gray = CommonBase.ConvertColorToGrayscale(img);
+            MyHistogram.INPUT_IMAGE = picturebox.IMAGE;
+            MyHistogram.SEARCH_AREA = SearchAreaImage;
+            MyHistogram.Run();
+
+            int Result = Convert.ToInt32(MyHistogram.RESULT);
 
             picturebox.DrawRectangle(SearchAreaDisplay);
 
-            int histo = CommonBase.GetHisto(img);
-
-            lblResult.Text = histo.ToString();
-            if (histo >= numMin.Value && histo <= numMax.Value)
+            lblResult.Text = Result.ToString();
+            if (Result >= numMin.Value && Result <= numMax.Value)
             {
                 lblResult.ForeColor = Color.Green;
                 return 0;
@@ -74,6 +74,18 @@ namespace ImageInspector.Tools
             }
         }
 
+        private void btnSearchArea_Click(object sender, EventArgs e)
+        {
+            picturebox.ClearDisplay();
+            picturebox.DRAWING = true;
+            picturebox.DrawRectangle(SearchAreaDisplay);
+        }
+
+        private void btnRun_Click(object sender, EventArgs e)
+        {
+            this.Run();
+        }
+
         public int SetImage(MyPicturebox display)
         {
             picturebox = display;
@@ -83,6 +95,7 @@ namespace ImageInspector.Tools
                 SearchAreaImage = new Rectangle(0, 0, display.IMAGE.Width, display.IMAGE.Height);
             }
 
+            picturebox.IMAGE = ImageInspector.ImageLibrary.ImagePreprocessing.ConvertImage.ConvertColorToGray(picturebox.IMAGE);
             return 0;
         }
     }

@@ -8,14 +8,14 @@ namespace ImageInspector.Tools
 {
     public partial class BarcodeTool : UserControl, ToolInterface
     {
+        private MyBarcode myBarcode = new MyBarcode();
+        private MyPicturebox picturebox = new MyPicturebox();
+        private Rectangle SearchAreaDisplay, SearchAreaImage;
+
         public BarcodeTool()
         {
             InitializeComponent();
         }
-
-        private ImageLibrary.MyBarcode myBarcode = new ImageLibrary.MyBarcode();
-        private MyPicturebox picturebox = new MyPicturebox();
-        private Rectangle SearchAreaDisplay, SearchAreaImage;
 
         public int SetImage(MyPicturebox display)
         {
@@ -49,40 +49,39 @@ namespace ImageInspector.Tools
 
         public string GetResult()
         {
-            if(myBarcode.Result == null)
-            {
-                return "";
-            }
-            else
-            {
-                return myBarcode.Result.Text;
-            }
+            return (string)myBarcode.RESULT;
         }
 
         public void Release()
         {
-            myBarcode = null;
-            picturebox = null;
+            this.Release();
+            int i = this.Controls.Count;
+            while (i > 0)
+            {
+                this.Controls[--i].Dispose();
+            }
         }
 
         public int Run()
         {
-            Image img = CommonBase.CropImage(picturebox.IMAGE, SearchAreaImage);
-            myBarcode.ReadBarcode(img);
+            myBarcode.INPUT_IMAGE = picturebox.IMAGE;
+            myBarcode.SEARCH_AREA = SearchAreaImage;
+            int ret = myBarcode.Run();
 
             picturebox.DrawRectangle(SearchAreaDisplay);
+            //picturebox.IMAGE = myBarcode.OUTPUT_IMAGE;
 
-            if(myBarcode.Result == null)
+            if (ret == 0)
+            {
+                txtResult.ForeColor = Color.Green;
+                txtResult.Text = (string)myBarcode.RESULT;
+                return 0;
+            }
+            else
             {
                 txtResult.ForeColor = Color.Red;
                 txtResult.Text = "";
                 return 1;
-            }
-            else
-            {
-                txtResult.ForeColor = Color.Green;
-                txtResult.Text = myBarcode.Result.Text;
-                return 0;
             }
         }
 

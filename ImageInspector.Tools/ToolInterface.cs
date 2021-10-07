@@ -5,7 +5,6 @@ namespace ImageInspector.Tools
     public interface ToolInterface
     {
         int SetImage(ImageInspector.Controls.MyPicturebox display);
-
         int Confirm();
         int Cancel();
 
