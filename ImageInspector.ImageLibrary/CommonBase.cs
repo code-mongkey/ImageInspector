@@ -1,25 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenCvSharp.Extensions;
+﻿using System.Drawing;
+using OpenCvSharp;
 
 namespace ImageInspector.ImageLibrary
 {
     public abstract class CommonBase
     {
-        public abstract Image INPUT_IMAGE { get; set; }
-        public abstract Image OUTPUT_IMAGE { get; set; }
+        public abstract Image INSPECTION_IMAGE { get; set; }
         public abstract Rectangle SEARCH_AREA { get; set; }
+        public abstract Rectangle FIND_AREA { get; set; }
         public abstract object RESULT { get; set; }
         public abstract int Run();
 
-        public Image CropImage(Image image, Rectangle rectangle)
+        protected void DrawImage(Image image, Rectangle rectangle, Color color, int width=4)
         {
-            return (Image)((Bitmap)image).Clone(rectangle, image.PixelFormat);
+            using (Graphics g = Graphics.FromImage(image))
+            {
+                g.DrawRectangle(new Pen(color, width), SEARCH_AREA);
+            }
         }
+        protected void DrawImage(Image image, RectangleF rectangle, Color color, int width=4)
+        {
+            using (Graphics g = Graphics.FromImage(image))
+            {
+                g.DrawRectangle(new Pen(color, width), SEARCH_AREA);
+            }
+        }
+        protected Bitmap MatToBitmap(Mat mat) => OpenCvSharp.Extensions.BitmapConverter.ToBitmap(mat);
+        protected Mat BitmapToMat(Bitmap bmp) => OpenCvSharp.Extensions.BitmapConverter.ToMat(bmp);
     }
 }

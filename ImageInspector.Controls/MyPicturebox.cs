@@ -12,10 +12,18 @@ namespace ImageInspector.Controls
 {
     public partial class MyPicturebox : UserControl
     {
-
         public MyPicturebox()
         {
             InitializeComponent();
+
+            DoubleBuffered = true;
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
+            MyDrawStrings = new MyList<MyDrawString>();
+            MyDrawRectangles = new MyList<MyDrawRectangle>();
+
+            MyDrawStrings.OnAdd += MyDraw_OnAdd;
+            MyDrawRectangles.OnAdd += MyDraw_OnAdd;
 
             pictureBox1.MouseDown += PictureBox_MouseDown;
             pictureBox1.MouseMove += PictureBox_MouseMove;
@@ -23,17 +31,18 @@ namespace ImageInspector.Controls
             pictureBox1.Paint += PictureBox_Paint;
         }
 
-        private Rectangle Search_Area_Display;
-        public Rectangle SEARCH_AREA_DISPLAY
+        private void MyDraw_OnAdd(object? sender, EventArgs e)
         {
-            get { return Search_Area_Display; }
+            this.Refresh();
         }
 
-        private Rectangle Search_Area_Image;
-        public Rectangle SEARCH_AREA_IMAGE
-        {
-            get { return Search_Area_Image; }
-        }
+        private int StartX, StartY;
+
+        public MyList<MyDrawString> MyDrawStrings;
+        public MyList<MyDrawRectangle> MyDrawRectangles;
+
+        public Rectangle SEARCH_AREA_DISPLAY { get; private set; }
+        public Rectangle SEARCH_AREA_IMAGE { get; private set; }
 
         private bool Drawing = false;
         public bool DRAWING
@@ -42,7 +51,7 @@ namespace ImageInspector.Controls
             set { Drawing = value; }
         }
 
-        private Image InspectionImage = null;
+        private Image InspectionImage;
         public Image IMAGE
         {
             get {  return InspectionImage; }
@@ -55,37 +64,40 @@ namespace ImageInspector.Controls
 
         private void PictureBox_MouseDown(object? sender, MouseEventArgs e)
         {
-            if (!ValidateChildren()) return;
+            if (!CheckValidation()) return;
 
             int pX = e.X;
             int pY = e.Y;
 
             if (pX < 0 || pY < 0) return;
-            if(pX >= pictureBox1.Image.Width || pY >= pictureBox1.Image.Height) return;
 
-            Search_Area_Display = new Rectangle(pX, pY, 0, 0);
+            ClearDisplay();
+
+            StartX = e.X;
+            StartY = e.Y;
+            SEARCH_AREA_DISPLAY = new Rectangle(pX, pY, 0, 0);
 
             this.Refresh();
         }
 
         private void PictureBox_MouseMove(object? sender, MouseEventArgs e)
         {
-            if (!ValidateChildren()) return;
+            if (!CheckValidation()) return;
 
             if (e.Button == MouseButtons.Left)
             {
                 int pX = e.X;
                 int pY = e.Y;
 
-                int standardX = Search_Area_Display.X < pX ? Search_Area_Display.X : Search_Area_Display.X + Search_Area_Display.Width;
-                int standardY = Search_Area_Display.Y < pY ? Search_Area_Display.Y : Search_Area_Display.Y + Search_Area_Display.Height;
+                //int standardX = StartX < pX ? StartX : StartX + SEARCH_AREA_DISPLAY.Width;
+                //int standardY = StartY < pY ? StartY : StartY + SEARCH_AREA_DISPLAY.Height;
 
-                int x = Math.Min(standardX, pX);
-                int y = Math.Min(standardY, pY);
-                int width = Math.Abs(standardX - pX);
-                int height = Math.Abs(standardY - pY);
+                int x = Math.Min(StartX, pX);
+                int y = Math.Min(StartY, pY);
+                int width = Math.Abs(StartX - pX);
+                int height = Math.Abs(StartY - pY);
 
-                Search_Area_Display = new Rectangle(x,y, width, height);
+                SEARCH_AREA_DISPLAY = new Rectangle(x,y, width, height);
 
                 this.Refresh();
             }
@@ -93,16 +105,40 @@ namespace ImageInspector.Controls
 
         private void PictureBox_Paint(object sender, PaintEventArgs e)
         { 
-            if (!ValidateChildren()) return;
+            if (MyDrawRectangles.Count != 0)
+            {
+                foreach (MyDrawRectangle myDrawRectangle in MyDrawRectangles)
+                {
+                    if(myDrawRectangle.IsImage)
+                    {
+                        myDrawRectangle.Rectangle = ImageToDisplayFactor(myDrawRectangle.Rectangle);
+                        myDrawRectangle.IsImage = false;
+                    }
+                    using (Pen pen = new Pen(myDrawRectangle.Color, myDrawRectangle.Width))
+                    {
+                        e.Graphics.DrawRectangle(pen, myDrawRectangle.Rectangle);
+                    }
+                }
+            }
 
+            if (MyDrawStrings.Count != 0)
+            {
+                foreach (MyDrawString myDrawString in MyDrawStrings)
+                {
+                    e.Graphics.DrawString(myDrawString.Text, myDrawString.Font, myDrawString.Brush, myDrawString.X, myDrawString.Y);
+                }
+            }
+
+            if (!CheckValidation()) return;
             using (Pen pen = new Pen(Color.Blue, 2))
             {
-                e.Graphics.DrawRectangle(pen, Search_Area_Display);
+                e.Graphics.DrawString("영역 선택 후 확인 \r\n(MOUSE DRAG AND CONFIRM)", new Font("맑은 고딕", 12, FontStyle.Bold), Brushes.Black, 10, 10);
+                e.Graphics.DrawRectangle(pen, SEARCH_AREA_DISPLAY);
             }
         }
         private void PictureBox_MouseUp(object? sender, MouseEventArgs e)
         {
-            if (!ValidateChildren()) return;
+            if (!CheckValidation()) return;
 
             Drawing = false;
 
@@ -110,11 +146,11 @@ namespace ImageInspector.Controls
             double hfactor = (double)InspectionImage.Height / pictureBox1.ClientSize.Height;
             double resizeFactor = Math.Max(wfactor, hfactor);
 
-            int sX = (int)((pictureBox1.Image.Width / 2) + (Search_Area_Display.X - (pictureBox1.ClientSize.Width / 2)) * resizeFactor);
-            int sY = (int)((pictureBox1.Image.Height / 2) + (Search_Area_Display.Y - (pictureBox1.ClientSize.Height / 2)) * resizeFactor);
+            int sX = (int)((pictureBox1.Image.Width / 2) + (SEARCH_AREA_DISPLAY.X - (pictureBox1.ClientSize.Width / 2)) * resizeFactor);
+            int sY = (int)((pictureBox1.Image.Height / 2) + (SEARCH_AREA_DISPLAY.Y - (pictureBox1.ClientSize.Height / 2)) * resizeFactor);
 
-            int eX = (int)((pictureBox1.Image.Width / 2) + (Search_Area_Display.X + Search_Area_Display.Width - (pictureBox1.ClientSize.Width / 2)) * resizeFactor);
-            int eY = (int)((pictureBox1.Image.Height / 2) + (Search_Area_Display.Y + Search_Area_Display.Height - (pictureBox1.ClientSize.Height / 2)) * resizeFactor);
+            int eX = (int)((pictureBox1.Image.Width / 2) + (SEARCH_AREA_DISPLAY.X + SEARCH_AREA_DISPLAY.Width - (pictureBox1.ClientSize.Width / 2)) * resizeFactor);
+            int eY = (int)((pictureBox1.Image.Height / 2) + (SEARCH_AREA_DISPLAY.Y + SEARCH_AREA_DISPLAY.Height - (pictureBox1.ClientSize.Height / 2)) * resizeFactor);
 
             sX = sX < 0 ? 0 : sX;
             sY = sY < 0 ? 0 : sY;
@@ -126,36 +162,53 @@ namespace ImageInspector.Controls
             eX = eX >= pictureBox1.Image.Width ? pictureBox1.Image.Width - 1 : eX;
             eY = eY >= pictureBox1.Image.Height ? pictureBox1.Image.Height - 1 : eY;
 
-            Search_Area_Image = new Rectangle(sX, sY, Math.Max(eX - sX, 1), Math.Max(eY - sY, 1));
+            SEARCH_AREA_IMAGE = new Rectangle(sX, sY, Math.Max(eX - sX, 1), Math.Max(eY - sY, 1));
         }
 
-        public override bool ValidateChildren()
+        private bool CheckValidation()
         {
             if (!Drawing) return false;
             if (InspectionImage == null) return false;
-
-            return base.ValidateChildren();
+            return true;
         }
 
-        public void DrawString(string text, Brush brush, int emSize = 10, int x = 0, int y = 0)
+        /// <summary>
+        /// 이미지위치에서 컨트롤 위치로 변경하는 함수
+        /// </summary>
+        /// <param name="rectangle"></param>
+        /// <returns></returns>
+        private Rectangle ImageToDisplayFactor(Rectangle rectangle)
         {
-            Graphics drawString = pictureBox1.CreateGraphics();
-            drawString.DrawString(text, new Font("맑은 고딕", emSize), brush, x, y);
-        }
-        public void DrawRectangle(Rectangle rect)
-        {
-            Graphics drawString = pictureBox1.CreateGraphics();
-            drawString.DrawRectangle(new Pen(Color.Blue, 2), rect);
+            double wfactor = (double)pictureBox1.ClientSize.Width / InspectionImage.Width;
+            double hfactor = (double)pictureBox1.ClientSize.Height / InspectionImage.Height;
+            double resizeFactor = Math.Min(wfactor, hfactor);
+
+            int sX = (int)((pictureBox1.ClientSize.Width / 2) + (rectangle.X - (pictureBox1.Image.Width / 2)) * resizeFactor);
+            int sY = (int)((pictureBox1.ClientSize.Height / 2) + (rectangle.Y - (pictureBox1.Image.Height / 2)) * resizeFactor);
+
+            int eX = (int)((pictureBox1.ClientSize.Width / 2) + (rectangle.X + rectangle.Width - (pictureBox1.Image.Width / 2)) * resizeFactor);
+            int eY = (int)((pictureBox1.ClientSize.Height / 2) + (rectangle.Y + rectangle.Height - (pictureBox1.Image.Height / 2)) * resizeFactor);
+
+            sX = sX < 0 ? 0 : sX;
+            sY = sY < 0 ? 0 : sY;
+            eX = eX < 0 ? 0 : eX;
+            eY = eY < 0 ? 0 : eY;
+
+            sX = sX >= pictureBox1.ClientSize.Width ? pictureBox1.ClientSize.Width - 1 : sX;
+            sY = sY >= pictureBox1.ClientSize.Height ? pictureBox1.ClientSize.Height - 1 : sY;
+            eX = eX >= pictureBox1.ClientSize.Width ? pictureBox1.ClientSize.Width - 1 : eX;
+            eY = eY >= pictureBox1.ClientSize.Height ? pictureBox1.ClientSize.Height - 1 : eY;
+
+            return new Rectangle(sX, sY, eX-sX, eY-sY);
         }
 
         public void ClearDisplay()
         {
-            Image img = (Image)pictureBox1.Image.Clone();
+            MyDrawRectangles.Clear();
+            MyDrawStrings.Clear();
 
             Graphics g = pictureBox1.CreateGraphics();
             g.Clear(Color.LightGray);
-
-            pictureBox1.Image = img;
 
             this.Refresh();
         }

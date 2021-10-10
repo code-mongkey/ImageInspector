@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using OpenCvSharp;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading.Tasks;
 
@@ -32,6 +33,15 @@ namespace ImageInspector.ImageLibrary.ImagePreprocessing
 
             return grayImage;
         }
+
+        public static Image ConvertColorToGrayByOpenCV(Image image)
+        {
+            Mat src = OpenCvSharp.Extensions.BitmapConverter.ToMat((Bitmap)image);
+            Mat gray = src.CvtColor(ColorConversionCodes.BGR2GRAY);
+            Image output = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(gray);
+            return output;
+        }
+
         public static unsafe Image ConvertGrayToBinary(Image image, int threshold)
         {
             Bitmap outputImage = new Bitmap(image);
@@ -59,6 +69,36 @@ namespace ImageInspector.ImageLibrary.ImagePreprocessing
             outputImage.UnlockBits(bitmapData);
 
             return outputImage;
+        }
+
+        public enum RGB { B, G, R}
+        public static unsafe Image ConvertColorToRGB(Image image, RGB value)
+        {
+            Bitmap outputImage = new Bitmap(image);
+            int width = outputImage.Width;
+            int height = outputImage.Height;
+
+            BitmapData bitmapData = outputImage.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+            int stride = bitmapData.Stride;
+            System.IntPtr Scan0 = bitmapData.Scan0;
+            byte* p = (byte*)(void*)Scan0;
+            Parallel.For(0, height, y =>
+            {
+                Parallel.For(0, width, x =>
+                {
+                    int nPos = y * stride + x * 3;
+                    p[nPos + 0] = p[nPos + 1] = p[nPos + 2] = (byte)(p[nPos + (int)value]);
+                });
+            });
+
+            outputImage.UnlockBits(bitmapData);
+
+            return outputImage;
+        }
+
+        public static Image CropImage(Image image, Rectangle rectangle)
+        {
+            return (Image)((Bitmap)image).Clone(rectangle, image.PixelFormat);
         }
     }
 }

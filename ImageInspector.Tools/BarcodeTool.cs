@@ -6,10 +6,10 @@ using System.Windows.Forms;
 
 namespace ImageInspector.Tools
 {
-    public partial class BarcodeTool : UserControl, ToolInterface
+    public partial class BarcodeTool : UserControl, ToolInterface, IDisposable
     {
-        private MyBarcode myBarcode = new MyBarcode();
-        private MyPicturebox picturebox = new MyPicturebox();
+        private MyBarcode MyBarcode = new MyBarcode();
+        private MyPicturebox MyPicturebox = new MyPicturebox();
         private Rectangle SearchAreaDisplay, SearchAreaImage;
 
         public BarcodeTool()
@@ -19,8 +19,8 @@ namespace ImageInspector.Tools
 
         public int SetImage(MyPicturebox display)
         {
-            picturebox = display;
-            if (picturebox != null)
+            MyPicturebox = display;
+            if (MyPicturebox != null)
             {
                 SearchAreaDisplay = new Rectangle(0, 0, display.Width, display.Height);
                 SearchAreaImage = new Rectangle(0, 0, display.IMAGE.Width, display.IMAGE.Height);
@@ -31,30 +31,29 @@ namespace ImageInspector.Tools
 
         public int Cancel()
         {
-            picturebox.DRAWING = false;
-            picturebox.ClearDisplay();
+            MyPicturebox.DRAWING = false;
+            MyPicturebox.ClearDisplay();
             return 0;
         }
 
         public int Confirm()
         {
-            picturebox.DRAWING = false;
-            picturebox.ClearDisplay();
+            MyPicturebox.DRAWING = false;
+            MyPicturebox.ClearDisplay();
 
-            SearchAreaDisplay = picturebox.SEARCH_AREA_DISPLAY;
-            SearchAreaImage = picturebox.SEARCH_AREA_IMAGE;
+            SearchAreaDisplay = MyPicturebox.SEARCH_AREA_DISPLAY;
+            SearchAreaImage = MyPicturebox.SEARCH_AREA_IMAGE;
             
             return 0;
         }
 
         public string GetResult()
         {
-            return (string)myBarcode.RESULT;
+            return (string)MyBarcode.RESULT;
         }
 
         public void Release()
         {
-            this.Release();
             int i = this.Controls.Count;
             while (i > 0)
             {
@@ -64,17 +63,18 @@ namespace ImageInspector.Tools
 
         public int Run()
         {
-            myBarcode.INPUT_IMAGE = picturebox.IMAGE;
-            myBarcode.SEARCH_AREA = SearchAreaImage;
-            int ret = myBarcode.Run();
+            if (MyPicturebox.IMAGE == null) return 1;
 
-            picturebox.DrawRectangle(SearchAreaDisplay);
-            //picturebox.IMAGE = myBarcode.OUTPUT_IMAGE;
+            MyBarcode.INSPECTION_IMAGE = MyPicturebox.IMAGE;
+            MyBarcode.SEARCH_AREA = SearchAreaImage;
+            int ret = MyBarcode.Run();
 
+            MyDrawRectangle myDrawRectangle = new MyDrawRectangle(SearchAreaDisplay, ret == 0 ? Color.Green : Color.Red, 4);
+            MyPicturebox.MyDrawRectangles.Add(myDrawRectangle);
             if (ret == 0)
             {
                 txtResult.ForeColor = Color.Green;
-                txtResult.Text = (string)myBarcode.RESULT;
+                txtResult.Text = (string)MyBarcode.RESULT;
                 return 0;
             }
             else
@@ -92,9 +92,11 @@ namespace ImageInspector.Tools
 
         private void btnSearchArea_Click(object sender, EventArgs e)
         {
-            picturebox.ClearDisplay();
-            picturebox.DRAWING = true;
-            picturebox.DrawRectangle(SearchAreaDisplay);
+            MyPicturebox.ClearDisplay();
+            MyPicturebox.DRAWING = true;
+            //MyPicturebox.DrawRectangle(SearchAreaDisplay, Color.Green);
+            MyDrawRectangle myDrawRectangle = new MyDrawRectangle(SearchAreaDisplay, Color.Green, 4);
+            MyPicturebox.MyDrawRectangles.Add(myDrawRectangle);
         }
     }
 }

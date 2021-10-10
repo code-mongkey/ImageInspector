@@ -33,6 +33,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.myPicturebox1 = new ImageInspector.Controls.MyPicturebox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtToolName = new System.Windows.Forms.TextBox();
             this.btnAdd = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.cboTools = new System.Windows.Forms.ComboBox();
@@ -41,6 +43,7 @@
             this.btnConfirm = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.btnDel = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -57,20 +60,20 @@
             this.tableLayoutPanel1.Controls.Add(this.panel2, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.panel3, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.tabControl1, 1, 1);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1184, 561);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1250, 622);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // btnLoadImage
             // 
             this.btnLoadImage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnLoadImage.Location = new System.Drawing.Point(887, 514);
+            this.btnLoadImage.Location = new System.Drawing.Point(953, 575);
             this.btnLoadImage.Name = "btnLoadImage";
             this.btnLoadImage.Size = new System.Drawing.Size(294, 44);
             this.btnLoadImage.TabIndex = 4;
@@ -85,7 +88,7 @@
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
             this.tableLayoutPanel1.SetRowSpan(this.panel1, 2);
-            this.panel1.Size = new System.Drawing.Size(878, 505);
+            this.panel1.Size = new System.Drawing.Size(944, 566);
             this.panel1.TabIndex = 0;
             // 
             // myPicturebox1
@@ -95,19 +98,38 @@
             this.myPicturebox1.IMAGE = null;
             this.myPicturebox1.Location = new System.Drawing.Point(0, 0);
             this.myPicturebox1.Name = "myPicturebox1";
-            this.myPicturebox1.Size = new System.Drawing.Size(878, 505);
+            this.myPicturebox1.Size = new System.Drawing.Size(944, 566);
             this.myPicturebox1.TabIndex = 0;
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.btnDel);
+            this.panel2.Controls.Add(this.label2);
+            this.panel2.Controls.Add(this.txtToolName);
             this.panel2.Controls.Add(this.btnAdd);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.cboTools);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(887, 3);
+            this.panel2.Location = new System.Drawing.Point(953, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(294, 44);
+            this.panel2.Size = new System.Drawing.Size(294, 74);
             this.panel2.TabIndex = 1;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(25, 43);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(43, 15);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "검사명";
+            // 
+            // txtToolName
+            // 
+            this.txtToolName.Location = new System.Drawing.Point(74, 38);
+            this.txtToolName.Name = "txtToolName";
+            this.txtToolName.Size = new System.Drawing.Size(139, 23);
+            this.txtToolName.TabIndex = 3;
             // 
             // btnAdd
             // 
@@ -136,6 +158,7 @@
             this.cboTools.Name = "cboTools";
             this.cboTools.Size = new System.Drawing.Size(138, 23);
             this.cboTools.TabIndex = 0;
+            this.cboTools.SelectedIndexChanged += new System.EventHandler(this.cboTools_SelectedIndexChanged);
             // 
             // panel3
             // 
@@ -143,15 +166,15 @@
             this.panel3.Controls.Add(this.btnConfirm);
             this.panel3.Controls.Add(this.btnCancel);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(3, 514);
+            this.panel3.Location = new System.Drawing.Point(3, 575);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(878, 44);
+            this.panel3.Size = new System.Drawing.Size(944, 44);
             this.panel3.TabIndex = 5;
             // 
             // btnInspection
             // 
             this.btnInspection.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnInspection.Location = new System.Drawing.Point(582, 0);
+            this.btnInspection.Location = new System.Drawing.Point(648, 0);
             this.btnInspection.Name = "btnInspection";
             this.btnInspection.Size = new System.Drawing.Size(120, 44);
             this.btnInspection.TabIndex = 2;
@@ -162,7 +185,7 @@
             // btnConfirm
             // 
             this.btnConfirm.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnConfirm.Location = new System.Drawing.Point(702, 0);
+            this.btnConfirm.Location = new System.Drawing.Point(768, 0);
             this.btnConfirm.Name = "btnConfirm";
             this.btnConfirm.Size = new System.Drawing.Size(88, 44);
             this.btnConfirm.TabIndex = 1;
@@ -173,7 +196,7 @@
             // btnCancel
             // 
             this.btnCancel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnCancel.Location = new System.Drawing.Point(790, 0);
+            this.btnCancel.Location = new System.Drawing.Point(856, 0);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(88, 44);
             this.btnCancel.TabIndex = 0;
@@ -184,20 +207,30 @@
             // tabControl1
             // 
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(887, 53);
+            this.tabControl1.Location = new System.Drawing.Point(953, 83);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(294, 455);
+            this.tabControl1.Size = new System.Drawing.Size(294, 486);
             this.tabControl1.TabIndex = 6;
+            // 
+            // btnDel
+            // 
+            this.btnDel.Location = new System.Drawing.Point(218, 39);
+            this.btnDel.Name = "btnDel";
+            this.btnDel.Size = new System.Drawing.Size(67, 23);
+            this.btnDel.TabIndex = 5;
+            this.btnDel.Text = "DEL";
+            this.btnDel.UseVisualStyleBackColor = true;
+            this.btnDel.Click += new System.EventHandler(this.btnDel_Click);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1184, 561);
+            this.ClientSize = new System.Drawing.Size(1250, 622);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "FormMain";
-            this.Text = "Form1";
+            this.Text = "ImageInspector";
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
@@ -223,6 +256,9 @@
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.Button btnInspection;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox txtToolName;
+        private System.Windows.Forms.Button btnDel;
     }
 }
 

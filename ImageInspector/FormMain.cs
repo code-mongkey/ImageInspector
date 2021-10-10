@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using ImageInspector.Tools;
+using ImageInspector.Controls;
 
 namespace ImageInspector
 {
@@ -32,36 +33,75 @@ namespace ImageInspector
                 loadedImgPath = loadImage.FileName;
             else return;
 
-            try
-            {
-                Bitmap bitmap = new Bitmap(loadedImgPath);
-                myPicturebox1.IMAGE = bitmap;
+            myPicturebox1.ClearDisplay();
 
-                foreach (TabPage tab in tabControl1.TabPages)
-                {
-                    ((ToolInterface)tab.Controls[0]).SetImage(myPicturebox1);
-                }
-            }
-            catch (Exception ex)
+            Bitmap bitmap = new Bitmap(loadedImgPath);
+            myPicturebox1.IMAGE = bitmap;
+
+            foreach (TabPage tab in tabControl1.TabPages)
             {
-                Console.WriteLine(ex.Message);
+                ((ToolInterface)tab.Controls[0]).SetImage(myPicturebox1);
             }
         }
 
         private void btnConfirm_Click(object sender, EventArgs e)
         {
-            if (myPicturebox1.IMAGE == null) return;
+            if (!CheckValidation()) return;
+            myPicturebox1.DRAWING = false;
             ((Tools.ToolInterface)(tabControl1.SelectedTab.Controls[0])).Confirm();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
+            if (!CheckValidation()) return;
+            myPicturebox1.DRAWING = false;
             ((Tools.ToolInterface)(tabControl1.SelectedTab.Controls[0])).Cancel();
+        }
+
+        private bool CheckValidation()
+        {
+            if (myPicturebox1.IMAGE == null) return false;
+            if (tabControl1.TabPages.Count == 0) return false;
+            return true;
+        }
+
+        private void btnInspection_Click(object sender, EventArgs e)
+        {
+            if (!CheckValidation()) return;
+
+            myPicturebox1.DRAWING = false;
+            myPicturebox1.ClearDisplay();
+
+            int result = 0;
+            foreach (TabPage tabpage in tabControl1.TabPages)
+            {
+                result += ((Tools.ToolInterface)tabpage.Controls[0]).Run();
+            }
+
+            string text = result == 0 ? "OK" : "NG";
+            Brush brush = result == 0 ? Brushes.Green : Brushes.Red;
+            MyDrawString myDrawString = new MyDrawString(text, brush, new Font("맑은 고딕", 20, FontStyle.Bold), 10, 10);
+            myPicturebox1.MyDrawStrings.Add(myDrawString);
+        }
+
+        private void cboTools_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            txtToolName.Text = cboTools.Text + tabControl1.TabCount.ToString();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
             if (cboTools.Text == "") return;
+            if (txtToolName.Text == "") return;
+
+            foreach (TabPage tabPage in tabControl1.TabPages)
+            {
+                if (txtToolName.Text.Trim() == tabPage.Text)
+                {
+                    MessageBox.Show("동알한 검사명이 존재합니다");
+                    return;
+                }
+            }
 
             UserControl tool = null;
             switch (cboTools.SelectedIndex)
@@ -69,37 +109,32 @@ namespace ImageInspector
                 case 0:
                     tool = new Tools.BarcodeTool();
                     break;
+                case 1:
+                    tool = new Tools.MatchingTool();
+                    break;
                 case 2:
                     tool = new Tools.HistogramTool();
                     break;
             }
 
-            tabControl1.TabPages.Add(new TabPage(cboTools.Text + tabControl1.TabPages.Count));
+            tabControl1.TabPages.Add(new TabPage(txtToolName.Text.Trim()));
             tabControl1.TabPages[tabControl1.TabPages.Count - 1].Controls.Add(tool);
             tabControl1.SelectTab(tabControl1.TabPages.Count - 1);
 
-            if(myPicturebox1.IMAGE != null)
+            if (myPicturebox1.IMAGE != null)
             {
                 ((Tools.ToolInterface)(tabControl1.TabPages[tabControl1.TabPages.Count - 1].Controls[0])).SetImage(myPicturebox1);
             }
         }
 
-        private void btnInspection_Click(object sender, EventArgs e)
-        {
-            if (myPicturebox1.IMAGE == null) return;
-
-            myPicturebox1.ClearDisplay();
-
-            int result = 0;
-            foreach(TabPage tabpage in tabControl1.TabPages)
+        private void btnDel_Click(object sender, EventArgs e)
+        { 
+            if (tabControl1.TabPages.Count == 0) return;
+            if (MessageBox.Show(tabControl1.SelectedTab.Text + " 를 삭제하시겠습니까?", "WARNING", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                //((Tools.ToolInterface)tabpage.Controls[0]).SetImage(myPicturebox1);
-                result += ((Tools.ToolInterface)tabpage.Controls[0]).Run();
+                ((Tools.ToolInterface)(tabControl1.SelectedTab.Controls[0])).Release();
+                tabControl1.TabPages.RemoveAt(tabControl1.SelectedIndex);
             }
-
-            string text = result == 0 ? "OK" : "NG";
-            Brush brush = result == 0 ? Brushes.Green : Brushes.Red;
-            myPicturebox1.DrawString(text, brush, 30, 10, 10);
         }
     }
 }

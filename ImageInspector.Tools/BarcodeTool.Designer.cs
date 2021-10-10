@@ -48,7 +48,7 @@ namespace ImageInspector.Tools
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(51, 208);
+            this.label1.Location = new System.Drawing.Point(51, 69);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(47, 15);
             this.label1.TabIndex = 1;
@@ -56,7 +56,7 @@ namespace ImageInspector.Tools
             // 
             // txtResult
             // 
-            this.txtResult.Location = new System.Drawing.Point(51, 226);
+            this.txtResult.Location = new System.Drawing.Point(51, 87);
             this.txtResult.Multiline = true;
             this.txtResult.Name = "txtResult";
             this.txtResult.Size = new System.Drawing.Size(205, 102);
@@ -64,7 +64,7 @@ namespace ImageInspector.Tools
             // 
             // btnSearchArea
             // 
-            this.btnSearchArea.Location = new System.Drawing.Point(51, 17);
+            this.btnSearchArea.Location = new System.Drawing.Point(50, 15);
             this.btnSearchArea.Name = "btnSearchArea";
             this.btnSearchArea.Size = new System.Drawing.Size(205, 37);
             this.btnSearchArea.TabIndex = 3;

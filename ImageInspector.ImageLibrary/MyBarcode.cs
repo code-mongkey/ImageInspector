@@ -7,13 +7,20 @@ namespace ImageInspector.ImageLibrary
     {
         public override object RESULT { get; set; }
         public override Rectangle SEARCH_AREA { get; set; }
-        public override Image INPUT_IMAGE { get; set; }
-        public override Image OUTPUT_IMAGE { get; set; }
+        public override Image INSPECTION_IMAGE { get; set; }
+        public override Rectangle FIND_AREA { get; set; }
+
+        public MyBarcode()
+        {
+            RESULT = "";
+            FIND_AREA = new Rectangle();
+            SEARCH_AREA = new Rectangle();
+        }
 
         public int ReadBarcode()
         {
             RESULT = "";
-            Image img = CropImage(INPUT_IMAGE, SEARCH_AREA);
+            Image img = ImagePreprocessing.ConvertImage.CropImage(INSPECTION_IMAGE, SEARCH_AREA);
             ZXing.BarcodeReader barcodeReader = new ZXing.BarcodeReader();
             ZXing.Result result = barcodeReader.Decode((Bitmap)img);
             if (result == null || result.Text == "") return 1;
@@ -34,11 +41,7 @@ namespace ImageInspector.ImageLibrary
                 eY = eY > point.Y ? eY : point.Y;
             }
 
-            OUTPUT_IMAGE = new Bitmap(INPUT_IMAGE);
-            
-            Graphics g = Graphics.FromImage(OUTPUT_IMAGE);
-            g.DrawRectangle(new Pen(Color.Cyan, 4), sX, sY, eX - sX, eY - sY);
-            g.Dispose();
+            FIND_AREA = new Rectangle((int)sX, (int)sY, (int)(eX - sX), (int)(eY - sY));
 
             return 0;
         }

@@ -37,13 +37,19 @@ namespace ImageInspector.Tools
             this.label2 = new System.Windows.Forms.Label();
             this.lblResult = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.cboConvertImage = new System.Windows.Forms.ComboBox();
+            this.myPicturebox1 = new ImageInspector.Controls.MyPicturebox();
+            this.btnConvert = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numMin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numMax)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnRun
             // 
-            this.btnRun.Location = new System.Drawing.Point(44, 331);
+            this.btnRun.Location = new System.Drawing.Point(49, 393);
             this.btnRun.Name = "btnRun";
             this.btnRun.Size = new System.Drawing.Size(205, 37);
             this.btnRun.TabIndex = 1;
@@ -53,7 +59,7 @@ namespace ImageInspector.Tools
             // 
             // btnSearchArea
             // 
-            this.btnSearchArea.Location = new System.Drawing.Point(44, 35);
+            this.btnSearchArea.Location = new System.Drawing.Point(50, 15);
             this.btnSearchArea.Name = "btnSearchArea";
             this.btnSearchArea.Size = new System.Drawing.Size(205, 37);
             this.btnSearchArea.TabIndex = 4;
@@ -63,7 +69,7 @@ namespace ImageInspector.Tools
             // 
             // numMin
             // 
-            this.numMin.Location = new System.Drawing.Point(160, 111);
+            this.numMin.Location = new System.Drawing.Point(165, 67);
             this.numMin.Maximum = new decimal(new int[] {
             255,
             0,
@@ -77,7 +83,7 @@ namespace ImageInspector.Tools
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(44, 113);
+            this.label1.Location = new System.Drawing.Point(49, 69);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(30, 15);
             this.label1.TabIndex = 6;
@@ -85,9 +91,9 @@ namespace ImageInspector.Tools
             // 
             // numMax
             // 
-            this.numMax.Location = new System.Drawing.Point(160, 155);
+            this.numMax.Location = new System.Drawing.Point(165, 97);
             this.numMax.Maximum = new decimal(new int[] {
-            255,
+            256,
             0,
             0,
             0});
@@ -104,7 +110,7 @@ namespace ImageInspector.Tools
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(44, 157);
+            this.label2.Location = new System.Drawing.Point(49, 99);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(33, 15);
             this.label2.TabIndex = 6;
@@ -112,27 +118,76 @@ namespace ImageInspector.Tools
             // 
             // lblResult
             // 
-            this.lblResult.AutoSize = true;
-            this.lblResult.Location = new System.Drawing.Point(231, 203);
+            this.lblResult.Location = new System.Drawing.Point(197, 125);
             this.lblResult.Name = "lblResult";
-            this.lblResult.Size = new System.Drawing.Size(14, 15);
+            this.lblResult.Size = new System.Drawing.Size(53, 23);
             this.lblResult.TabIndex = 7;
-            this.lblResult.Text = "0";
+            this.lblResult.Text = "000";
             this.lblResult.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(44, 203);
+            this.label4.Location = new System.Drawing.Point(49, 129);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(47, 15);
             this.label4.TabIndex = 8;
             this.label4.Text = "RESULT";
             // 
+            // cboConvertImage
+            // 
+            this.cboConvertImage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboConvertImage.FormattingEnabled = true;
+            this.cboConvertImage.Location = new System.Drawing.Point(97, 15);
+            this.cboConvertImage.Name = "cboConvertImage";
+            this.cboConvertImage.Size = new System.Drawing.Size(97, 23);
+            this.cboConvertImage.TabIndex = 9;
+            // 
+            // myPicturebox1
+            // 
+            this.myPicturebox1.DRAWING = false;
+            this.myPicturebox1.IMAGE = null;
+            this.myPicturebox1.Location = new System.Drawing.Point(10, 85);
+            this.myPicturebox1.Name = "myPicturebox1";
+            this.myPicturebox1.Size = new System.Drawing.Size(184, 129);
+            this.myPicturebox1.TabIndex = 11;
+            // 
+            // btnConvert
+            // 
+            this.btnConvert.Location = new System.Drawing.Point(10, 46);
+            this.btnConvert.Name = "btnConvert";
+            this.btnConvert.Size = new System.Drawing.Size(184, 28);
+            this.btnConvert.TabIndex = 12;
+            this.btnConvert.Text = "CONVERT";
+            this.btnConvert.UseVisualStyleBackColor = true;
+            this.btnConvert.Click += new System.EventHandler(this.btnConvert_Click);
+            // 
+            // panel1
+            // 
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.myPicturebox1);
+            this.panel1.Controls.Add(this.btnConvert);
+            this.panel1.Controls.Add(this.label3);
+            this.panel1.Controls.Add(this.cboConvertImage);
+            this.panel1.Location = new System.Drawing.Point(49, 155);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(205, 224);
+            this.panel1.TabIndex = 13;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(9, 18);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(82, 15);
+            this.label3.TabIndex = 10;
+            this.label3.Text = "ConvertImage";
+            // 
             // HistogramTool
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.lblResult);
             this.Controls.Add(this.label2);
@@ -142,9 +197,11 @@ namespace ImageInspector.Tools
             this.Controls.Add(this.btnSearchArea);
             this.Controls.Add(this.btnRun);
             this.Name = "HistogramTool";
-            this.Size = new System.Drawing.Size(300, 400);
+            this.Size = new System.Drawing.Size(300, 450);
             ((System.ComponentModel.ISupportInitialize)(this.numMin)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numMax)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -160,5 +217,10 @@ namespace ImageInspector.Tools
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lblResult;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox cboConvertImage;
+        private Controls.MyPicturebox myPicturebox1;
+        private System.Windows.Forms.Button btnConvert;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label label3;
     }
 }

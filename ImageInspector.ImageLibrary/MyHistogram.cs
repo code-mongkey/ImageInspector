@@ -10,30 +10,41 @@ namespace ImageInspector.ImageLibrary
 {
     public class MyHistogram : CommonBase
     {
+        public override object RESULT { get; set; }
+        public override Image INSPECTION_IMAGE { get; set; }
         public override Rectangle SEARCH_AREA { get; set; }
-        public override object? RESULT { get; set; }
-        public override Image INPUT_IMAGE { get; set; }
-        public override Image OUTPUT_IMAGE { get; set; }
+        public override Rectangle FIND_AREA { get; set; }
+        
+        public MyHistogram()
+        {
+            RESULT = "";
+            SEARCH_AREA = new Rectangle();
+            FIND_AREA = new Rectangle();
+        }
 
         private unsafe int GetHisto()
         {
-            if (INPUT_IMAGE == null) return -1;
-
+            if (INSPECTION_IMAGE == null) return -1;
+            object lockObject = new object();
             long total = 0;
+
             try
             {
-                Bitmap grayImage = new Bitmap(INPUT_IMAGE);
+                Bitmap grayImage = new Bitmap(INSPECTION_IMAGE);
 
-                BitmapData bitmapData = grayImage.LockBits(SEARCH_AREA, ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+                BitmapData bitmapData = grayImage.LockBits(new Rectangle(0,0,grayImage.Width,grayImage.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
                 int stride = bitmapData.Stride;
                 System.IntPtr Scan0 = bitmapData.Scan0;
                 byte* p = (byte*)(void*)Scan0;
-                Parallel.For(SEARCH_AREA.Y, SEARCH_AREA.Y + SEARCH_AREA.Height, y =>
+                Parallel.For(SEARCH_AREA.X, SEARCH_AREA.X + SEARCH_AREA.Width, x =>
                 {
-                    Parallel.For(SEARCH_AREA.X, SEARCH_AREA.X + SEARCH_AREA.Width, x =>
+                    Parallel.For(SEARCH_AREA.Y, SEARCH_AREA.Y + SEARCH_AREA.Height, y =>
                     {
-                        int nPos = y * stride + x * 3;
-                        total += (p[nPos + 0] + p[nPos + 1] + p[nPos + 2]) / 3;
+                        lock (lockObject)
+                        {
+                            int nPos = y * stride + x * 3;
+                            total += (p[nPos + 0] + p[nPos + 1] + p[nPos + 2]) / 3;
+                        }
                     });
                 });
 
@@ -44,8 +55,7 @@ namespace ImageInspector.ImageLibrary
                 return -1;
             }
 
-            OUTPUT_IMAGE = new Bitmap(INPUT_IMAGE);
-
+            FIND_AREA = SEARCH_AREA;
             int brightness = (int)(total / (SEARCH_AREA.Width * SEARCH_AREA.Height));
             return brightness;
         }
@@ -54,6 +64,7 @@ namespace ImageInspector.ImageLibrary
         {
             int ret = this.GetHisto();
             RESULT = ret.ToString();
+            DrawImage(INSPECTION_IMAGE, SEARCH_AREA, Color.Blue);
             return ret == -1 ? 1 : 0;
         }
     }
